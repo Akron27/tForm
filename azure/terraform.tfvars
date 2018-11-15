@@ -5,3 +5,4 @@ tenant="a7288f82-b9ee-4329-925d-f67e405ec2a4"
 
 rg="table4dsrtfgrp"
 location="southeastasia"
+sec_group_name="table4dsrtfgrpsecgrp"
