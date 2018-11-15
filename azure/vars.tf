@@ -17,6 +17,7 @@ variable "location"{
 variable "rg"{
 }
 variable "sec_group_name"{}
+variable "prefix"{}
 output "more"{
   value="${var.appid}"
 }

@@ -28,3 +28,56 @@ resource "azurerm_storage_account" "mystorage" {
 		environment="Testing"
 	}
 }
+
+resource "azurerm_virtual_machine" "thevm" {
+	name="table4dsvmtrf"
+	location="${var.location}"
+	resource_group_name="${var.rg}"
+	 network_interface_ids=["${azurerm_network_interface.mynic.id}"]
+	 vm_size="Standard_DS1_v2"
+	 storage_os_disk {
+		 name="theosdisk"
+		 caching="ReadWrite"
+		 create_option="FromImage"
+		 managed_disk_type="Premium_LRS"
+	}
+
+
+
+storage_image_reference{
+	publisher="Canonical"
+	offer="UbuntuServer"
+	sku="16.04-LTS"
+	version="latest"
+}
+os_profile{
+	computer_name="table4dsvmtrf"
+	admin_username="azureops"
+}
+os_profile_linux_config{
+	disable_password_authentication=true
+	ssh_keys{
+	path="/home/azureops/.ssh/authorized_keys"
+	key_data="${file("~/.ssh/id_rsa.pub")}"
+	}
+}
+	boot_diagnostics{
+		enabled="true"
+		storage_uri="${azurerm_storage_account.mystorage.primary_blob_endpoint}"	
+	}
+tags{
+	environment="Testing"
+}
+}
+resource "null_resource" "upload"{
+	provisioner "file"{
+        source="/home/azureops/terraform/azure/table4ds1thegraph.svg"
+        destination="./thegraph.svg"
+        connection{
+		host="${azurerm_public_ip.myip.ip_address}"
+                type="ssh"
+                user="azureops"
+        }
+   }	
+}
+
